@@ -9,6 +9,7 @@ namespace webapi.Models
         }
         public int Id { get; set; }
         public string Name { get; set; }
-        public double EucDist { get; set; }
+        public double Euclidean { get; set; }
+        public double Pearson { get; set; }
     }
 }

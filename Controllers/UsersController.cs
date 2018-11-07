@@ -35,22 +35,30 @@ namespace webapi.Controllers
             {
                 return Json(NotFound());
             }
+
             IEnumerable<User> users = _context.Users.Include(x => x.Ratings).Where(x => x.Id != id);
             var similarUsers = new List<UserViewModel>();
-            foreach (var u in users)
+
+            foreach (var user in users)
             {
-                similarUsers.Add(new UserViewModel(u)
+                similarUsers.Add(new UserViewModel(user)
                 {
-                    EucDist = u.CalcEuclidean(selectedUser)
+                    Euclidean = user.CalcEuclidean(selectedUser),
+                    Pearson = user.CalcPearson(selectedUser)
                 });
             }
+
             return Json(new
             {
                 selectedUser.Id,
                 selectedUser.Name,
-                similarUsers = similarUsers
-                    .Select(x => new { x.Id, x.Name, x.EucDist })
-                    .OrderByDescending(x => x.EucDist)
+                Euclidean = similarUsers
+                    .Select(x => new { x.Id, x.Name, x.Euclidean })
+                    .OrderByDescending(x => x.Euclidean)
+                    .Take(3),
+                Pearson = similarUsers
+                    .Select(x => new { x.Id, x.Name, x.Pearson })
+                    .OrderByDescending(x => x.Pearson)
                     .Take(3)
             });
         }
