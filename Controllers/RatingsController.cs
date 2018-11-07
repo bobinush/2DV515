@@ -9,32 +9,32 @@ namespace webapi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class RatingsController : ControllerBase
     {
         private readonly ApiDbContext _context;
 
-        public UsersController(ApiDbContext context)
+        public RatingsController(ApiDbContext context)
         {
             _context = context;
         }
 
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<User>> GetAll()
+        public ActionResult<IEnumerable<Rating>> GetAll()
         {
-            return _context.Users.ToList();
+            return _context.Ratings.ToList();
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public ActionResult<User> Get(int id)
+        public ActionResult<Rating> Get(int id)
         {
-            var user = _context.Users.Find(id);
-            if (user == null)
+            var rating = _context.Ratings.Find(id);
+            if (rating == null)
             {
                 return NotFound();
             }
-            return user;
+            return rating;
         }
 
         // POST api/values
