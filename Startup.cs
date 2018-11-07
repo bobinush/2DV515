@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using webapi.Models;
+using NJsonSchema;
+using NSwag.AspNetCore;
 
 namespace webapi
 {
@@ -31,6 +33,7 @@ namespace webapi
                 options.UseInMemoryDatabase("A1"));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddSwagger();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,7 +48,25 @@ namespace webapi
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            app.UseSwaggerUi3WithApiExplorer(settings =>
+            {
+                settings.GeneratorSettings.DefaultPropertyNameHandling =
+                PropertyNameHandling.CamelCase;
+                settings.PostProcess = document =>
+                {
+                    document.Info.Title = "2DV515 Web Intelligence";
+                    document.Info.Description = @"Overview for the API created during the
+                    Web Intelligence course at Linnaeus University";
+                    document.Info.Contact = new NSwag.SwaggerContact
+                    {
+                        Name = "Robin Nowakowski",
+                        Email = string.Empty,
+                        Url = "http://github.com/bobinush"
+                    };
+                };
+            });
+
+            // app.UseHttpsRedirection();
             app.UseMvc();
         }
     }

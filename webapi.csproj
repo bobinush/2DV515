@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="NSwag.AspNetCore" Version="11.20.1" />
     <PackageReference Include="TinyCsvParser" Version="2.0.0" />
   </ItemGroup>
 

@@ -18,14 +18,14 @@ namespace webapi.Controllers
             _context = context;
         }
 
-        // GET api/values
+        // GET api/ratings
         [HttpGet]
         public ActionResult<IEnumerable<Rating>> GetAll()
         {
             return _context.Ratings.ToList();
         }
 
-        // GET api/values/5
+        // GET api/ratings/5
         [HttpGet("{id}")]
         public ActionResult<Rating> Get(int id)
         {
@@ -37,22 +37,22 @@ namespace webapi.Controllers
             return rating;
         }
 
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+        // // POST api/ratings
+        // [HttpPost]
+        // public void Post([FromBody] string value)
+        // {
+        // }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        // // PUT api/ratings/5
+        // [HttpPut("{id}")]
+        // public void Put(int id, [FromBody] string value)
+        // {
+        // }
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        // // DELETE api/ratings/5
+        // [HttpDelete("{id}")]
+        // public void Delete(int id)
+        // {
+        // }
     }
 }
