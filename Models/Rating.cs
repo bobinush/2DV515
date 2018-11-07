@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using TinyCsvParser.Mapping;
 
 namespace webapi.Models
@@ -7,7 +9,9 @@ namespace webapi.Models
         public int Id { get; set; }
         public int UserId { get; set; }
         public string Movie { get; set; }
-        public decimal Score { get; set; }
+        public double Score { get; set; }
+
+        public User User { get; set; }
     }
 
     public sealed class RatingClassMap : CsvMapping<Rating>

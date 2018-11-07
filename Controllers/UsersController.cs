@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using webapi.Models;
 
 namespace webapi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : Controller
     {
         private readonly ApiDbContext _context;
 
@@ -20,21 +21,38 @@ namespace webapi.Controllers
 
         // GET api/users
         [HttpGet]
-        public ActionResult<IEnumerable<User>> GetAll()
+        public JsonResult GetAll()
         {
-            return _context.Users.ToList();
+            return Json(_context.Users.ToList());
         }
 
         // GET api/users/5
         [HttpGet("{id}")]
-        public ActionResult<User> Get(int id)
+        public JsonResult Get(int id)
         {
-            var user = _context.Users.Find(id);
-            if (user == null)
+            User selectedUser = _context.Users.Include(x => x.Ratings).SingleOrDefault(x => x.Id == id);
+            if (selectedUser == null)
             {
-                return NotFound();
+                return Json(NotFound());
             }
-            return user;
+            IEnumerable<User> users = _context.Users.Include(x => x.Ratings).Where(x => x.Id != id);
+            var similarUsers = new List<UserViewModel>();
+            foreach (var u in users)
+            {
+                similarUsers.Add(new UserViewModel(u)
+                {
+                    EucDist = u.CalcEuclidean(selectedUser)
+                });
+            }
+            return Json(new
+            {
+                selectedUser.Id,
+                selectedUser.Name,
+                similarUsers = similarUsers
+                    .Select(x => new { x.Id, x.Name, x.EucDist })
+                    .OrderByDescending(x => x.EucDist)
+                    .Take(3)
+            });
         }
 
         // // POST api/users
