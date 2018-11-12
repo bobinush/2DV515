@@ -17,8 +17,6 @@ namespace webApi.Models
                 return;   // DB has been seeded
             }
 
-            // Create a new User if collection is empty,
-            // which means you can't delete all Users.
             var parserOptions = new CsvParserOptions(skipHeader: true, fieldsSeparator: ';');
 
             var userParser = new CsvParser<User>(parserOptions, new UserClassMap());
@@ -30,8 +28,17 @@ namespace webApi.Models
 
             var ratingParser = new CsvParser<Rating>(parserOptions, new RatingClassMap());
             var ratings = ratingParser.ReadFromFile("ratings.csv", Encoding.UTF8).ToList();
+            var movies = ratings.Select(x => x.Result.Title).Distinct().ToList();
+            for (int i = 0; i < movies.Count; i++)
+            {
+                context.Movies.Add(new Movie() { Title = movies[i] });
+            }
+            context.SaveChanges();
+
+            var m = context.Movies.ToList();
             for (int i = 0; i < ratings.Count; i++)
             {
+                ratings[i].Result.MovieId = m.Find(x => x.Title == ratings[i].Result.Title).Id;
                 context.Ratings.Add(ratings[i].Result);
             }
             context.SaveChanges();

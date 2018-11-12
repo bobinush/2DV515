@@ -20,7 +20,7 @@ namespace webapi.Models
             {
                 foreach (var rB in user.Ratings)
                 {
-                    if (rA.Movie == rB.Movie)
+                    if (rA.MovieId == rB.MovieId)
                     {
                         sim += Math.Pow(rA.Score - rB.Score, 2.0);
                         n++;
@@ -40,12 +40,12 @@ namespace webapi.Models
             {
                 foreach (var rB in user.Ratings)
                 {
-                    if (rA.Movie == rB.Movie)
+                    if (rA.MovieId == rB.MovieId)
                     {
                         sum1 += rA.Score;
                         sum2 += rB.Score;
-                        sum1sq = Math.Pow(rA.Score, 2.0);
-                        sum2sq = Math.Pow(rB.Score, 2.0);
+                        sum1sq += rA.Score * rA.Score;
+                        sum2sq += rB.Score * rB.Score;
                         psum += rA.Score * rB.Score;
                         n++;
                     }
