@@ -27,6 +27,11 @@ namespace webapi.Controllers
         }
 
         // GET api/users/pearson/5
+        /// <summary>
+        /// Calculating with pearson ratings 
+        /// </summary>
+        /// <param name="id">User id</param>
+        /// <returns></returns>
         [HttpGet("pearson/{id}")]
         public JsonResult GetPearson(int id)
         {
@@ -39,6 +44,11 @@ namespace webapi.Controllers
         }
 
         // GET api/users/euclidean/5
+        /// <summary>
+        /// Calculating with euclidean ratings 
+        /// </summary>
+        /// <param name="id">User id</param>
+        /// <returns></returns>
         [HttpGet("euclidean/{id}")]
         public JsonResult GetEuclidean(int id)
         {
