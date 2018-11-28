@@ -107,6 +107,7 @@ namespace webapi.Controllers
                         .Sum(s => s.Score),
                 }).ToList();
 
+            // TODO : Lägg till grafiskt gränssnitt, gör en MVC med dropdownlista över användare, radiobutton för euclidean/pearson 
             return new UserViewModel()
             {
                 Id = selectedUser.Id,
