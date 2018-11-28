@@ -10,7 +10,7 @@ LNU Course Web Intelligence
 4. Browse to http://localhost:5000/swagger
 
 ### Info
-D is imported on startup.
+Data is imported on startup.
 
 #### A1
 Data: `ratings.csv` & `users.csv`
