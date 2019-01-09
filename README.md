@@ -17,3 +17,6 @@ Data: `ratings.csv` & `users.csv`
 
 #### A2
 Data: `blogdata.txt`
+
+#### A3
+Data: `wikipedia folder`
