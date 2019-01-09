@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using webapi.Models;
 using NJsonSchema;
 using NSwag.AspNetCore;
+using Z.EntityFramework.Extensions;
 
 namespace webapi
 {
@@ -29,8 +30,18 @@ namespace webapi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string connString = Configuration.GetConnectionString("WI");
             services.AddDbContext<ApiDbContext>(options =>
-                options.UseInMemoryDatabase("A1"));
+                options.UseSqlite(connString));
+
+            // Using a constructor that requires optionsBuilder (EF Core) 
+            // To use EF bulkinsert (nuget package)
+            EntityFrameworkManager.ContextFactory = context =>
+            {
+                var optionsBuilder = new DbContextOptionsBuilder<ApiDbContext>();
+                optionsBuilder.UseSqlServer(connString);
+                return new ApiDbContext(optionsBuilder.Options);
+            };
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSwagger();

@@ -8,11 +8,11 @@ namespace webapi.Models
     {
         public CentroidViewModel()
         {
-            Words = new List<Word>();
+            Words = new List<BlogWord>();
             Blogs = new List<Blog>();
         }
         public string Name { get; set; }
-        public List<Word> Words { get; set; }
+        public List<BlogWord> Words { get; set; }
         public int NumberOfBlogs { get { return Blogs.Count; } }
         public List<Blog> Blogs { get; set; }
         public List<string> PreviousBlogs { get; set; }
@@ -54,7 +54,8 @@ namespace webapi.Models
 
         internal bool IsClusterSameAsPrevious()
         {
-            return !Blogs.Select(x => x.Name).Except(PreviousBlogs).Any() && !PreviousBlogs.Except(Blogs.Select(x => x.Name)).Any();
+            return !Blogs.Select(x => x.Name).Except(PreviousBlogs).Any()
+                && !PreviousBlogs.Except(Blogs.Select(x => x.Name)).Any();
         }
     }
 }

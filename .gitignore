@@ -284,3 +284,5 @@ __pycache__/
 .history
 
 # End of https://www.gitignore.io/api/aspnetcore,visualstudiocode
+wikipedia/
+*.db

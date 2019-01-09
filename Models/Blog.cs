@@ -7,10 +7,10 @@ namespace webapi.Models
     {
         public Blog()
         {
-            Words = new List<Word>();
+            Words = new List<BlogWord>();
         }
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<Word> Words { get; set; }
+        public List<BlogWord> Words { get; set; }
     }
 }

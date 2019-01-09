@@ -35,8 +35,11 @@ namespace webapi.Controllers
             int iterations = 0;
             int clusters = 5;
             var centroids = new List<CentroidViewModel>();
-            var words = _context.Blogs.Include(x => x.Words).First().Words.ToList();
-            var blogWords = _context.Blogs.Include(x => x.Words).SelectMany(x => x.Words).ToList();
+            // Load all blogs into memory because getting all one by one takes
+            // forever with the current database setup
+            var blogs = _context.Blogs.Include(x => x.Words).OrderByDescending(x => x.Id).ToList();
+            var words = blogs.First().Words;
+            var blogWords = blogs.SelectMany(x => x.Words).ToList();
             var rnd = new Random();
             bool newMatchesFound = true;
             dynamic d = new List<ExpandoObject>();
@@ -59,7 +62,7 @@ namespace webapi.Controllers
                     var word = d[i].Word;
                     var min = d[i].Min;
                     var max = d[i].Max;
-                    c.Words.Add(new Word() { Key = word, Value = rnd.Next((int)min, (int)max) });
+                    c.Words.Add(new BlogWord() { Key = word, Value = rnd.Next((int)min, (int)max) });
                 }
                 centroids.Add(c);
             }
@@ -67,7 +70,7 @@ namespace webapi.Controllers
             while (newMatchesFound && iterations < maxIterations)
             {
                 centroids.ForEach(x => x.ClearAssignments());
-                foreach (Blog b in _context.Blogs.Include(x => x.Words))
+                foreach (Blog b in blogs)
                 {
                     double distance = double.MaxValue;
                     var best = new CentroidViewModel();

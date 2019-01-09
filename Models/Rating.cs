@@ -20,6 +20,7 @@ namespace webapi.Models
 
         // only used when importing really
         [JsonIgnore]
+        [NotMapped]
         public string Title { get; set; }
     }
 
