@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,5 +14,8 @@ namespace webapi.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<Blog> Blogs { get; set; }
+        public DbSet<Page> Pages { get; set; }
+        public DbSet<WordMap> WordMap { get; set; }
+        public DbSet<PageWord> Word { get; set; }
     }
 }

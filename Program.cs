@@ -27,8 +27,8 @@ namespace webapi
                 try
                 {
                     var context = services.GetRequiredService<Models.ApiDbContext>();
-                    // using ContosoUniversity.Data; 
-                    DbInitializer.Initialize(context);
+                    var db = new DbInitializer(context);
+                    db.Initialize();
                 }
                 catch (Exception ex)
                 {
