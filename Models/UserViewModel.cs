@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace webapi.Models
+namespace mvc.Models
 {
     public class UserViewModel
     {

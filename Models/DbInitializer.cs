@@ -5,9 +5,8 @@ using System.Linq;
 using System.Text;
 using CsvHelper;
 using TinyCsvParser;
-using webapi.Models;
 
-namespace webApi.Models
+namespace mvc.Models
 {
     public class DbInitializer
     {

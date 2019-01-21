@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TinyCsvParser.Mapping;
 using TinyCsvParser.TypeConverter;
 
-namespace webapi.Models
+namespace mvc.Models
 {
     public class Movie
     {

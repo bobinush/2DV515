@@ -5,13 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using webapi.Models;
+using mvc.Models;
 using CsvHelper;
 using System.Collections.ObjectModel;
 using System.Dynamic;
 using System.Reflection;
 
-namespace webapi.Controllers
+namespace mvc.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

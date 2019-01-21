@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using TinyCsvParser.Mapping;
 
-namespace webapi.Models
+namespace mvc.Models
 {
     public class User
     {

@@ -1,4 +1,4 @@
-namespace webapi.Models
+namespace mvc.Models
 {
     public class BlogWord
     {
