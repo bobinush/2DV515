@@ -12,10 +12,10 @@ namespace mvc.Models
             Blogs = new List<Blog>();
         }
         public string Name { get; set; }
-        public List<BlogWord> Words { get; set; }
+        public ICollection<BlogWord> Words { get; set; }
         public int NumberOfBlogs { get { return Blogs.Count; } }
-        public List<Blog> Blogs { get; set; }
-        public List<string> PreviousBlogs { get; set; }
+        public ICollection<Blog> Blogs { get; set; }
+        public ICollection<string> PreviousBlogs { get; set; }
 
         public void ClearAssignments()
         {

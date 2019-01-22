@@ -1,0 +1,46 @@
+﻿@model ClusterViewModel
+
+@{
+    ViewData["Title"] = "A2 – Clustering";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <form class="form-inline">
+            <div class="form-group">
+                <label for="iterations">Max iterations</label>
+                <input type="text" id="iterations" class="form-control" name="maxIterations" placeholder="Max and default is 30">
+            </div>
+            <button type="submit" class="btn btn-default">Start</button>
+        </form>
+    </div>
+</div>
+
+
+<div class="row">
+    <p>Number of iterations: @Model.IterationsDone</p>
+    <div class="panel-group" id="accordion">
+        @foreach (var centroid in Model.Result)
+        {
+            int index = @Model.Result.IndexOf(centroid);
+        
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse@(index)">Centroid @index - Number of blogs: @centroid.NumberOfBlogs</a>
+                </h4>
+            </div>
+            <div id="collapse@(index)" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <ul>
+                        @foreach(var blogName in centroid.Blogs)
+                        {
+                            <li>@blogName</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</div>

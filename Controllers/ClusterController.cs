@@ -12,8 +12,6 @@ using System.Dynamic;
 
 namespace mvc.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class ClusterController : Controller
     {
         private readonly ApiDbContext _context;
@@ -23,15 +21,22 @@ namespace mvc.Controllers
             _context = context;
         }
 
-        // GET api/cluster
         /// <summary>
         /// K-Means clustering, will stop when  no new assignments are made.
         /// </summary>
         /// <param name="maxIterations">Number of max iterations</param>
         /// <returns></returns>
-        [HttpGet("KMeans/{maxIterations}")]
-        public JsonResult KMeans(int maxIterations = 30)
+        [HttpGet]
+        public IActionResult Index(int maxIterations = 0)
         {
+            int DEFAULT_MAX_ITERATIONS = 30;
+            if (maxIterations == 0)
+                return View(new ClusterViewModel());
+
+            maxIterations = maxIterations > DEFAULT_MAX_ITERATIONS
+                ? DEFAULT_MAX_ITERATIONS
+                : maxIterations;
+
             int iterations = 0;
             int clusters = 5;
             var centroids = new List<CentroidViewModel>();
@@ -112,12 +117,18 @@ namespace mvc.Controllers
                 // System.Console.WriteLine("-- iteration " + iterations);
                 // centroids.Select(x => new { x.NumberOfBlogs, PreviousBlogs = x.PreviousBlogs.Count }).ToList().ForEach(x => System.Console.WriteLine(x));
             }
-            return Json(centroids.Select(x => new
+
+            var model = new ClusterViewModel()
             {
-                x.Name,
-                x.NumberOfBlogs,
-                Blogs = x.Blogs.Select(b => b.Name)
-            }));
+                IterationsDone = iterations,
+                Result = centroids.Select(x => new ClusterList()
+                {
+                    Name = x.Name,
+                    NumberOfBlogs = x.NumberOfBlogs,
+                    Blogs = x.Blogs.Select(b => b.Name).ToList()
+                }).ToList()
+            };
+            return View(model);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace mvc.Models
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public List<Rating> Ratings { get; set; }
+        public ICollection<Rating> Ratings { get; set; }
 
         public double CalcEuclidean(User user)
         {
