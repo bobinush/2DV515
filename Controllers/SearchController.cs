@@ -13,8 +13,6 @@ using System.Reflection;
 
 namespace mvc.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class SearchController : Controller
     {
         private readonly ApiDbContext _context;
@@ -25,18 +23,20 @@ namespace mvc.Controllers
             _context = context;
         }
 
-        // GET api/search
         /// <summary>
         /// Search
         /// </summary>
         /// <param name="query"></param>
         /// <returns>Top 5 results</returns>
-        [HttpGet("{query}")]
-        public JsonResult Index(string query)
+        [HttpGet]
+        public IActionResult Index(string query)
         {
-            var model = OrderByContent(query);
+            if (string.IsNullOrWhiteSpace(query))
+                return View(new List<ScoreViewModel>());
 
-            return Json(model.Take(5));
+            List<ScoreViewModel> model = OrderByContent(query);
+
+            return View(model.Take(5).ToList());
         }
 
         // Content-Based Ranking 
@@ -45,10 +45,13 @@ namespace mvc.Controllers
             // Load all pages into memory because getting all one by one takes
             // forever with the current database setup
             var pages = _context.Pages.Include(x => x.Words).AsNoTracking().ToList();
-            int numberOfPages = _context.Pages.Count();
+            int numberOfPages = pages.Count();
             var result = new List<ScoreViewModel>();
             var scores = new MetricsViewModel(numberOfPages);
-            int[] q = query.Split().Select(x => GetIdForWord(x)).ToArray();
+            int[] q = query.Split().Select(x => GetIdForWord(x)).Where(x => x != 0).ToArray();
+
+            if (q.Length == 0)
+                return result;
 
             // Calculate score for each page
             for (int i = 1; i < numberOfPages + 1; i++)
@@ -130,13 +133,7 @@ namespace mvc.Controllers
             if (w != null)
                 return w.ID;
             else
-            {
-                int id = _context.WordMap.Last().ID + 1;
-                var newWord = new WordMap { Key = word };
-                _context.WordMap.Add(newWord);
-                _context.SaveChanges();
-                return newWord.ID;
-            }
+                return 0;
         }
 
         private void normalize(double[] scores, bool smallIsBetter)

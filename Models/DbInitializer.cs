@@ -104,7 +104,7 @@ namespace mvc.Models
                 var words = text.Split(" ");
                 var page = new Page();
                 var pageDic = new Dictionary<string, int>();
-                page.Url = files[j];
+                page.Url = files[j].Replace("wikipedia/Words", "");
                 page.ID = j + 1;
 
                 // From dynamic to the class Blog with a dictionary<string, int> Words
