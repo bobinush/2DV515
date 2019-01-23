@@ -20,3 +20,7 @@ Data: `blogdata.txt`
 
 #### A3
 Data: `wikipedia folder`
+
+### A4
+Java-project using the WEKA library
+Data: `spiral.arff`
