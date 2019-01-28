@@ -1,0 +1,39 @@
+﻿@model PaginatedList<UserP>
+
+@{
+    ViewData["Title"] = "Project – Recommendation System";
+}
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>User Id</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr style="cursor:pointer;" title="User @user.Id"onclick="location.href = '@(Url.Action("View", "Project", new { id = user.Id }))'">
+                        <td>@user.Id</td>
+                        <td>@user.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @{
+            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+        }
+
+        <a asp-route-p="@(Model.PageIndex - 1)" class="btn btn-default @prevDisabled">
+            Previous
+        </a>
+        <a asp-route-p="@(Model.PageIndex + 1)" class="btn btn-default @nextDisabled">
+            Next
+        </a>
+    </div>
+</div>

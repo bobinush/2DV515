@@ -13,8 +13,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using mvc.Models;
-using NJsonSchema;
-using NSwag.AspNetCore;
+// using NJsonSchema;
+// using NSwag.AspNetCore;
 using Z.EntityFramework.Extensions;
 
 namespace mvc
@@ -52,7 +52,7 @@ namespace mvc
             };
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddSwagger();
+            // services.AddSwagger();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,23 +72,23 @@ namespace mvc
             app.UseStaticFiles();
             // app.UseCookiePolicy();
 
-            app.UseSwaggerUi3WithApiExplorer(settings =>
-                        {
-                            settings.GeneratorSettings.DefaultPropertyNameHandling =
-                            PropertyNameHandling.CamelCase;
-                            settings.PostProcess = document =>
-                            {
-                                document.Info.Title = "2DV515 Web Intelligence";
-                                document.Info.Description = @"Overview for the API created during the
-                    Web Intelligence course at Linnaeus University";
-                                document.Info.Contact = new NSwag.SwaggerContact
-                                {
-                                    Name = "Robin Nowakowski",
-                                    Email = string.Empty,
-                                    Url = "http://github.com/bobinush"
-                                };
-                            };
-                        });
+            // app.UseSwaggerUi3WithApiExplorer(settings =>
+            //             {
+            //                 settings.GeneratorSettings.DefaultPropertyNameHandling =
+            //                 PropertyNameHandling.CamelCase;
+            //                 settings.PostProcess = document =>
+            //                 {
+            //                     document.Info.Title = "2DV515 Web Intelligence";
+            //                     document.Info.Description = @"Overview for the API created during the
+            //         Web Intelligence course at Linnaeus University";
+            //                     document.Info.Contact = new NSwag.SwaggerContact
+            //                     {
+            //                         Name = "Robin Nowakowski",
+            //                         Email = string.Empty,
+            //                         Url = "http://github.com/bobinush"
+            //                     };
+            //                 };
+            //             });
 
             app.UseMvc(routes =>
             {

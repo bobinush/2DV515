@@ -1,0 +1,53 @@
+﻿@model UserViewModel
+
+@{
+    ViewData["Title"] = "Project – Recommendation System";
+}
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <h2>@Model.Name</h2>
+        <h3>Ratings</h3>
+        <input type="hidden" id="UserId" value="@Model.Id">
+        <div class="pre-scrollable">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Movie</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var rating in Model.RatingsP.OrderByDescending(x => x.Timestamp))
+                    {
+                        <tr>
+                            <td>@rating.Movie.Title</td>
+                            <td>@rating.Score</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <h3>Recommendations</h3>
+        <!-- Nav tabs -->
+        <label for="min-recommendations">Min. # of ratings per movie</label><input type="text" id="min-recommendations" placeholder="Default 2">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation"><a href="#pearson" aria-controls="pearson" role="tab" data-toggle="tab">Pearson</a></li>
+            <li role="presentation"><a href="#euclidean" aria-controls="euclidean" role="tab" data-toggle="tab">Euclidean</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane" id="pearson">
+                </div>
+                <div role="tabpanel" class="tab-pane" id="euclidean">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

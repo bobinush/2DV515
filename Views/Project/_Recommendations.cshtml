@@ -1,0 +1,19 @@
+@model IEnumerable<MovieViewModel>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Movie</th>
+            <th>Score</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var movie in Model)
+        {
+            <tr>
+                <td>@movie.Title</td>
+                <td>@movie.Score</td>
+            </tr>
+        }
+    </tbody>
+</table>
