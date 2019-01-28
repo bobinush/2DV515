@@ -11,31 +11,27 @@ namespace mvc.Models
         {
             Id = u.Id;
             Name = u.Name;
-            Pearson = new Pearson();
-            Euclidean = new Euclidean();
+            Distance = new DistanceMetric();
+            Ratings = u.Ratings;
+        }
+        public UserViewModel(UserP u)
+        {
+            Id = u.Id;
+            Name = u.Name;
+            Distance = new DistanceMetric();
+            RatingsP = u.Ratings;
         }
         public int Id { get; set; }
         public string Name { get; set; }
         public ICollection<Rating> Ratings { get; set; }
+        public ICollection<RatingP> RatingsP { get; set; }
         public double Score { get; set; }
-        public Pearson Pearson { get; set; }
-        public Euclidean Euclidean { get; set; }
+        public DistanceMetric Distance { get; set; }
     }
 
-    public class Pearson
+    public class DistanceMetric
     {
-        public Pearson()
-        {
-            Movies = new List<MovieViewModel>();
-        }
-        public double Score { get; set; }
-        public ICollection<UserViewModel> SimilarUsers { get; set; }
-        public ICollection<MovieViewModel> Movies { get; set; }
-    }
-
-    public class Euclidean
-    {
-        public Euclidean()
+        public DistanceMetric()
         {
             Movies = new List<MovieViewModel>();
         }

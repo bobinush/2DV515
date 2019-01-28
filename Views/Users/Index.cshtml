@@ -16,7 +16,7 @@
             <tbody>
                 @foreach (var user in Model)
                 {
-                    <tr onclick="location.href = '@(Url.Action("View", "Users", new { id = user.Id }))'">
+                    <tr style="cursor:pointer;" onclick="location.href = '@(Url.Action("View", "Users", new { id = user.Id }))'">
                         <td>@user.Id</td>
                         <td>@user.Name</td>
                     </tr>

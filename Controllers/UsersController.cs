@@ -26,20 +26,40 @@ namespace mvc.Controllers
         [HttpGet("[controller]/{id}")]
         public IActionResult View(int id)
         {
-
             var user = _context.Users
                 .Include(x => x.Ratings).ThenInclude(x => x.Movie)
                 .SingleOrDefault(x => x.Id == id);
             if (user == null)
                 return NotFound();
 
-            UserViewModel model = DoWork(user);
-            model.Ratings = user.Ratings;
-
+            var model = new UserViewModel(user);
             return View(model);
         }
 
-        private UserViewModel DoWork(User selectedUser)
+        [HttpGet]
+        public IActionResult CalcPearson(int id, int minRatings = 2)
+        {
+            var user = _context.Users
+                            .Include(x => x.Ratings).ThenInclude(x => x.Movie)
+                            .SingleOrDefault(x => x.Id == id);
+
+            UserViewModel model = DoWork(user, true);
+            return PartialView("_Recommendations", model.Distance.Movies);
+        }
+
+        [HttpGet]
+        public IActionResult CalcEuclidean(int id, int minRatings = 2)
+        {
+            var user = _context.Users
+                .Include(x => x.Ratings).ThenInclude(x => x.Movie)
+                .SingleOrDefault(x => x.Id == id);
+
+            UserViewModel model = DoWork(user, false);
+
+            return PartialView("_Recommendations", model.Distance.Movies);
+        }
+
+        private UserViewModel DoWork(User selectedUser, bool pearson)
         {
             List<User> otherUsers = _context.Users
                 .Include(x => x.Ratings)
@@ -52,25 +72,25 @@ namespace mvc.Controllers
             {
                 var similarUser = new UserViewModel(user);
                 // Calc similarity score
-                similarUser.Pearson.Score = user.CalcPearson(selectedUser);
-                similarUser.Euclidean.Score = user.CalcEuclidean(selectedUser);
+                if (pearson)
+                    similarUser.Distance.Score = user.CalcPearson(selectedUser);
+                else
+                    similarUser.Distance.Score = user.CalcEuclidean(selectedUser);
+
+                // Only include users with similarity of more than 0 in the calculations
+                if (similarUser.Distance.Score < 0)
+                    continue;
 
                 // Only process the movies not seen by the selected user
                 var ratings = user.Ratings.Where(x => selectedUser.Ratings.All(y => y.MovieId != x.MovieId));
                 foreach (var rating in ratings)
                 {
                     // Calc weighted movie score (similarity * rating)
-                    similarUser.Pearson.Movies.Add(new MovieViewModel()
+                    similarUser.Distance.Movies.Add(new MovieViewModel()
                     {
                         MovieId = rating.MovieId,
                         Title = rating.Movie.Title,
-                        Score = similarUser.Pearson.Score * rating.Score,
-                    });
-                    similarUser.Euclidean.Movies.Add(new MovieViewModel()
-                    {
-                        MovieId = rating.MovieId,
-                        Title = rating.Movie.Title,
-                        Score = similarUser.Euclidean.Score * rating.Score,
+                        Score = similarUser.Distance.Score * rating.Score,
                     });
                 }
                 similarUsers.Add(similarUser);
@@ -78,7 +98,7 @@ namespace mvc.Controllers
 
             // Sum all weighted movie score 
             // Sum user similarity for each movie
-            var movierecPearson = similarUsers.SelectMany(u => u.Pearson.Movies)
+            var movierecDistance = similarUsers.SelectMany(u => u.Distance.Movies)
                 .GroupBy(m => new { m.MovieId, m.Title })
                 .Select(x => new MovieViewModel()
                 {
@@ -86,70 +106,35 @@ namespace mvc.Controllers
                     Title = x.Key.Title,
                     Score = x.Sum(s => s.Score), // Sum weighted movie score
                     SimilarityScore = similarUsers // Sum similarity score
-                        .Where(u => u.Pearson.Movies.Any(m => m.MovieId == x.Key.MovieId))
-                        .Sum(s => s.Pearson.Score),
+                        .Where(u => u.Distance.Movies.Any(m => m.MovieId == x.Key.MovieId))
+                        .Sum(s => s.Distance.Score),
                 }).ToList();
 
-            var movierecEuclidean = similarUsers.SelectMany(u => u.Euclidean.Movies)
-                .GroupBy(m => new { m.MovieId, m.Title })
-                .Select(x => new MovieViewModel()
-                {
-                    MovieId = x.Key.MovieId,
-                    Title = x.Key.Title,
-                    Score = x.Sum(s => s.Score), // Sum weighted movie score
-                    SimilarityScore = similarUsers // Sum similarity score
-                        .Where(u => u.Euclidean.Movies.Any(m => m.MovieId == x.Key.MovieId))
-                        .Sum(s => s.Euclidean.Score),
-                }).ToList();
-
-            // TODO : Lägg till grafiskt gränssnitt, gör en MVC med dropdownlista över användare, radiobutton för euclidean/pearson 
-
-            Pearson p = new Pearson()
+            var d = new DistanceMetric()
             {
                 SimilarUsers = similarUsers
-                    .Select(x => new UserViewModel()
-                    {
-                        Score = x.Pearson.Score
-                    })
-                    .OrderByDescending(x => x.Score)
-                    .Take(3).ToList(),
-                Movies = movierecPearson
-                    .Select(x => new MovieViewModel()
-                    {
-                        MovieId = x.MovieId,
-                        Title = x.Title,
-                        Score = x.Score / x.SimilarityScore
-                    })
-                    .OrderByDescending(x => x.Score)
-                    .Take(3).ToList()
-            };
-
-            Euclidean e = new Euclidean()
-            {
-                SimilarUsers = similarUsers
-                    .Select(x => new UserViewModel()
-                    {
-                        Score = x.Euclidean.Score
-                    })
-                    .OrderByDescending(x => x.Score)
-                    .Take(3).ToList(),
-                Movies = movierecEuclidean
-                    .Select(x => new MovieViewModel()
-                    {
-                        MovieId = x.MovieId,
-                        Title = x.Title,
-                        Score = x.Score / x.SimilarityScore
-                    })
-                    .OrderByDescending(x => x.Score)
-                    .Take(3).ToList()
+                     .Select(x => new UserViewModel()
+                     {
+                         Score = x.Distance.Score
+                     })
+                     .OrderByDescending(x => x.Score)
+                     .Take(3).ToList(),
+                Movies = movierecDistance
+                     .Select(x => new MovieViewModel()
+                     {
+                         MovieId = x.MovieId,
+                         Title = x.Title,
+                         Score = x.Score / x.SimilarityScore
+                     })
+                     .OrderByDescending(x => x.Score)
+                     .Take(3).ToList()
             };
 
             return new UserViewModel()
             {
                 Id = selectedUser.Id,
                 Name = selectedUser.Name,
-                Pearson = p,
-                Euclidean = e
+                Distance = d
             };
         }
     }

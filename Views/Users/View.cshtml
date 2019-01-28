@@ -8,23 +8,26 @@
     <div class="col-md-8 col-md-offset-2">
         <h2>@Model.Name</h2>
         <h3>Ratings</h3>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Movie</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var rating in Model.Ratings)
-                {
+        <input type="hidden" id="UserId" value="@Model.Id">
+        <div class="pre-scrollable">
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td>@rating.Movie.Title</td>
-                        <td>@rating.Score</td>
+                        <th>Movie</th>
+                        <th>Score</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var rating in Model.Ratings)
+                    {
+                        <tr>
+                            <td>@rating.Movie.Title</td>
+                            <td>@rating.Score</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -33,58 +36,17 @@
         <h3>Recommendations</h3>
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#pearson" aria-controls="pearson" role="tab" data-toggle="tab">Pearson</a></li>
+            <li role="presentation"><a href="#pearson" aria-controls="pearson" role="tab" data-toggle="tab">Pearson</a></li>
             <li role="presentation"><a href="#euclidean" aria-controls="euclidean" role="tab" data-toggle="tab">Euclidean</a></li>
         </ul>
 
         <!-- Tab panes -->
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active" id="pearson">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Movie</th>
-                                <th>Score</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var movie in Model.Pearson.Movies)
-                            {
-                                <tr>
-                                    <td>@movie.Title</td>
-                                    <td>@movie.Score</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                <div role="tabpanel" class="tab-pane" id="pearson">
                 </div>
-
                 <div role="tabpanel" class="tab-pane" id="euclidean">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Movie</th>
-                                <th>Score</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var movie in Model.Euclidean.Movies)
-                            {
-                                <tr>
-                                    <td>@movie.Title</td>
-                                    <td>@movie.Score</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script>
-    $('#myTabs a').click(function (e) {
-        e.preventDefault()
-        $(this).tab('show')
-    })
-</script>
