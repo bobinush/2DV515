@@ -19,12 +19,12 @@ namespace mvc.Models
             Id = u.Id;
             Name = u.Name;
             Distance = new DistanceMetric();
-            RatingsP = u.Ratings;
+            // RatingsP = u.Ratings;
         }
         public int Id { get; set; }
         public string Name { get; set; }
         public ICollection<Rating> Ratings { get; set; }
-        public ICollection<RatingP> RatingsP { get; set; }
+        public PaginatedList<RatingP> RatingsP { get; set; }
         public double Score { get; set; }
         public DistanceMetric Distance { get; set; }
     }

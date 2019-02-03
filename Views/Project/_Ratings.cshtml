@@ -1,0 +1,26 @@
+@model UserViewModel
+
+@{ 
+    var prevDisabled = !Model.RatingsP.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.RatingsP.HasNextPage ? "disabled" : ""; 
+}
+
+<div class="row">
+    @foreach (var rating in Model.RatingsP)
+    {
+    <div class="col-sm-3"><img src="https://place-hold.it/225x332" alt="@rating.Movie.Title" class="img-rounded img-responsive"> <p class="text-center">@rating.Score / 5 <br>@rating.Movie.Title</p></div>
+    }
+</div>
+
+<ul class="pager">
+    <li>
+        <a id="prev" data-url="@Url.Action("View", "Project")" data-id="@Model.RatingsP.PageIndex" class="btn btn-default @prevDisabled btn">
+            <<
+        </a>
+    </li>
+    <li>
+        <a id="next" data-url="@Url.Action("View", "Project")" data-id="@Model.RatingsP.PageIndex" class="btn btn-default @nextDisabled btn">
+            >>
+        </a>
+    </li>
+</ul>

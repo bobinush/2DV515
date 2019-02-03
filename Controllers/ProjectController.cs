@@ -27,7 +27,7 @@ namespace mvc.Controllers
         }
 
         [HttpGet("[controller]/{id}")]
-        public IActionResult View(int id, int minRatings = 2)
+        public async Task<IActionResult> View(int id, int? page)
         {
             var user = _context.UsersP
                 .Include(x => x.Ratings).ThenInclude(x => x.Movie)
@@ -36,7 +36,18 @@ namespace mvc.Controllers
                 return NotFound();
 
             var model = new UserViewModel(user);
-            return View(model);
+            int pageSize = 8;
+            model.RatingsP = await PaginatedList<RatingP>.CreateAsync(
+                            _context.RatingsP.AsNoTracking()
+                                .Include(x => x.Movie)
+                                .Where(x => x.UserId == id)
+                                .OrderByDescending(t => t.Timestamp),
+                            page ?? 1, pageSize);
+
+            if (page != null)
+                return PartialView("_Ratings", model);
+            else
+                return View(model);
         }
 
         public IActionResult CalcPearson(int id, int minRatings = 2)

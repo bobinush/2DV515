@@ -1,19 +1,8 @@
 @model IEnumerable<MovieViewModel>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Movie</th>
-            <th>Score</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var movie in Model)
-        {
-            <tr>
-                <td>@movie.Title</td>
-                <td>@movie.Score</td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="row">
+    @foreach (var movie in Model)
+    {
+    <div class="col-md-3"><img src="https://place-hold.it/225x332" alt="@movie.Title" class="img-thumbnail img-responsive"> <p class="text-center">@movie.Score / 5 <br> @movie.Title</p></div>
+    }
+</div>
