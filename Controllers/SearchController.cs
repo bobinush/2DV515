@@ -16,7 +16,7 @@ namespace mvc.Controllers
     public class SearchController : Controller
     {
         private readonly ApiDbContext _context;
-        private readonly double HIGH_VALUE = 10000;
+        private readonly double HIGH_VALUE = 100000;
 
         public SearchController(ApiDbContext context)
         {
@@ -42,40 +42,37 @@ namespace mvc.Controllers
         // Content-Based Ranking 
         private List<ScoreViewModel> OrderByContent(string query)
         {
+            var result = new List<ScoreViewModel>();
+            int[] q = query.Split().Select(x => GetIdForWord(x)).Where(x => x != 0).ToArray();
+            if (q.Length == 0)
+                return result;
+
             // Load all pages into memory because getting all one by one takes
             // forever with the current database setup
             var pages = _context.Pages.Include(x => x.Words).AsNoTracking().ToList();
             int numberOfPages = pages.Count();
-            var result = new List<ScoreViewModel>();
             var scores = new MetricsViewModel(numberOfPages);
-            int[] q = query.Split().Select(x => GetIdForWord(x)).Where(x => x != 0).ToArray();
-
-            if (q.Length == 0)
-                return result;
 
             // Calculate score for each page
-            for (int i = 1; i < numberOfPages + 1; i++)
+            for (int i = 0; i < numberOfPages; i++)
             {
-                Page p = pages.Find(x => x.ID == i);
-                scores.Content[i - 1] = getFrequencyScore(p, q);
-                scores.Location[i - 1] = getLocationScore(p, q);
-                if (q.Length > 1)
-                    scores.Distance[i - 1] = getDistanceScore(p, q);
+                Page p = pages.Find(x => x.ID == i + 1);
+                scores.Content[i] = getFrequencyScore(p, q);
+                scores.Location[i] = getLocationScore(p, q);
+                // if (q.Length > 1)
+                //     scores.Distance[i] = getDistanceScore(p, q);
             }
 
             // Normalize scores
             normalize(scores.Content, false);
             normalize(scores.Location, true);
-            normalize(scores.Distance, true);
+            // normalize(scores.Distance, true);
 
             // Generate result list
-            for (int i = 1; i < numberOfPages + 1; i++)
+            for (int i = 0; i < numberOfPages; i++)
             {
-                Page p = pages.Find(x => x.ID == i);
-                double score = 1.0 * scores.Content[i - 1]
-                    + 0.8 * scores.Location[i - 1]
-                    + 0.5 * scores.Distance[i - 1];
-                result.Add(new ScoreViewModel(p, score));
+                Page p = pages.Find(x => x.ID == i + 1);
+                result.Add(new ScoreViewModel(p, scores.Content[i], scores.Location[i]));
             }
 
             // Sort result list with highest score first
@@ -100,10 +97,16 @@ namespace mvc.Controllers
         private double getLocationScore(Page p, int[] query)
         {
             double score = 0;
-            foreach (var word in p.Words)
+            foreach (var q in query)
             {
-                if (query.Contains(word.Value))
-                    score += p.Words.IndexOf(word) + 1; // IndexOf = zero-based
+                foreach (var word in p.Words)
+                {
+                    if (q == word.Value)
+                    {
+                        score += (p.Words.IndexOf(word) + 1); // IndexOf = zero-based
+                        break;
+                    }
+                }
             }
             return score == 0 ? HIGH_VALUE : score;
         }
@@ -121,7 +124,7 @@ namespace mvc.Controllers
                 if (score1 == HIGH_VALUE && score1 == score2)
                     score1 = 0;
 
-                score += Math.Abs(score1 - score2);
+                score += Math.Abs(score1 - score2); // 0 - 1000 = 1000
             }
 
             return score;
@@ -131,7 +134,7 @@ namespace mvc.Controllers
         {
             var w = _context.WordMap.SingleOrDefault(x => x.Key == word);
             if (w != null)
-                return w.ID;
+                return w.Id;
             else
                 return 0;
         }
@@ -145,7 +148,7 @@ namespace mvc.Controllers
                 double min = scores.Min();
                 // Divide the min value by the score (and avoid division by zero)
                 for (int i = 0; i < scores.Length; i++)
-                    scores[i] = min / Math.Max(scores[i], 0.00001);
+                    scores[i] = Math.Round(min / Math.Max(scores[i], 0.00001), 5);
             }
             else
             {
@@ -153,7 +156,7 @@ namespace mvc.Controllers
                 double max = scores.Max();
                 // When we have a max value, divide all score by it
                 for (int i = 0; i < scores.Length; i++)
-                    scores[i] = scores[i] / max;
+                    scores[i] = Math.Round(scores[i] / max, 5);
             }
         }
 

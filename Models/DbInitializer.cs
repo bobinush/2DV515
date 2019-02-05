@@ -22,7 +22,7 @@ namespace mvc.Models
         {
             _context.Database.EnsureCreated();
 
-            if (_context.MoviesP.Any())
+            if (_context.WordMap.Any())
             {
                 return;   // DB has been seeded
             }
@@ -95,7 +95,7 @@ namespace mvc.Models
             int id;
             string path = "wikipedia/Words";
             string[] files = Directory.GetFiles(path, "", SearchOption.AllDirectories);
-            var wordsList = new List<PageWord>();
+            var pageWordsList = new List<PageWord>();
             var wordList = new List<WordMap>();
             var pages = new List<Page>();
             for (int j = 0; j < files.Length; j++)
@@ -103,7 +103,6 @@ namespace mvc.Models
                 var text = File.ReadAllText(files[j]);
                 var words = text.Split(" ");
                 var page = new Page();
-                var pageDic = new Dictionary<string, int>();
                 page.Url = files[j].Replace("wikipedia/Words", "");
                 page.ID = j + 1;
 
@@ -111,10 +110,8 @@ namespace mvc.Models
                 for (int i = 0; i < words.Length; i++)
                 {
                     id = GetIdForWord(words[i]);
-                    pageDic[words[i]] = id;
+                    pageWordsList.Add(new PageWord { Value = id, PageId = page.ID });
                 }
-                foreach (var item in pageDic)
-                    wordsList.Add(new PageWord { Value = item.Value, PageId = page.ID });
 
                 pages.Add(page);
             }
@@ -123,7 +120,7 @@ namespace mvc.Models
                 wordList.Add(new WordMap { Key = item.Key });
 
             _context.BulkInsert(pages);
-            _context.BulkInsert(wordsList);
+            _context.BulkInsert(pageWordsList);
             _context.BulkInsert(wordList);
         }
 

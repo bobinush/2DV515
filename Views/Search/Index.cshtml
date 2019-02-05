@@ -1,7 +1,7 @@
 ﻿@model List<ScoreViewModel>
 
 @{
-    ViewData["Title"] = "A2 – Clustering";
+    ViewData["Title"] = "A3 – Search Engine";
 }
 
 <div class="row">
@@ -20,18 +20,24 @@
 <div class="row">
     <div class="col-md-8">
         <table class="table table-striped">
-                <!-- <thead>
+                <thead>
                     <tr>
                         <th></th>
                         <th>Score</th>
+                        <th>Content</th>
+                        <th>Location</th>
+                        <th>Distance</th>
                     </tr>
-                </thead> -->
+                </thead>
             <tbody>
                 @foreach (var result in Model)
                 {
                 <tr>
                     <td>@result.Url</td>
                     <td>@result.Score</td>
+                    <td>@result.ScoreContent</td>
+                    <td>@result.ScoreLocation</td>
+                    <td>@result.ScoreDistance</td>
                 </tr>
                 }
             </tbody>
